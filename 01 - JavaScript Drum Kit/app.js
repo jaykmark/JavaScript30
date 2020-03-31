@@ -1,13 +1,28 @@
-console.log('hello world');
-
-window.addEventListener('keyup', (event) => {
-  console.log(event.code);
+// Play sound
+const playSound = (event) => {
   const audio = document.querySelector(`audio[data-key="${event.code}"]`);
-  console.log(audio);
+  const key = document.querySelector(`.key[data-key="${event.code}"]`);
+
+  if (!audio) return;
+  audio.currentTime = 0; // Rewinds audio clip to start to allow multiple hits
+  audio.play();
+  key.classList.add('playing');
+}
+
+
+// Removes 'playing' class 
+function removeTransition(event) {
+  if (event.propertyName !== 'transform') return; // skip if its not a transform
+
+  this.classList.remove('playing');
+};
+
+const keys = document.querySelectorAll('.key');
+
+keys.forEach((key) => {
+  key.addEventListener('transitionend', removeTransition);
 })
 
-window.addEventListener("keydown", function (event) {
-  let str = "KeyboardEvent: key='" + event.key + "' | code='" +
-    event.code + "'";
-  console.log(str);
-}, true);
+
+// Fires audio elements on key down
+window.addEventListener('keydown', playSound)
